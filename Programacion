@@ -1,0 +1,13 @@
+Programacion
+			estados
+				preload
+				create
+				menú
+			update
+				control del player
+					logica de obstaculos/problemas
+					premios/puntos
+
+Funcion twin.
+le pasas una coordenada de llegada.
+evento pointer. abstraccion de tap, touch, click. animación hacia ese lugar.
