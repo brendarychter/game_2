@@ -8,6 +8,6 @@ Programacion
 					logica de obstaculos/problemas
 					premios/puntos
 
-Funcion twin.
+Funcion tween.
 le pasas una coordenada de llegada.
 evento pointer. abstraccion de tap, touch, click. animación hacia ese lugar.
