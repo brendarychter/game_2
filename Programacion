@@ -11,3 +11,7 @@ Programacion
 Funcion tween.
 le pasas una coordenada de llegada.
 evento pointer. abstraccion de tap, touch, click. animación hacia ese lugar.
+
+
+Colisión vertical
+http://phaser.io/examples/v2/arcade-physics/vertical-collision

@@ -1,6 +1,6 @@
 // Global Variables
 var
-  game = new Phaser.Game(500, 500, Phaser.AUTO, 'towerlego'),
+  game = new Phaser.Game(1000, 700, Phaser.AUTO, 'towerlego'),
   Main = function () {}/*,
   gameOptions = {
     playSound: true,
@@ -22,7 +22,6 @@ Main.prototype = {
   create: function () {
 /*    game.state.add('Splash', Splash);
     game.state.start('Splash');*/
-    this.game.scale.pageAlignHorizontally = true;this.game.scale.pageAlignVertically = true;this.game.scale.refresh();
 
     var me = this;
 
@@ -42,12 +41,20 @@ Main.prototype = {
     me.createBlock();
     me.createPlayer();
     me.createRope();
+    var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    spaceKey.onDown.add(this.dropBlock, this);  
+  },
+  dropBlock: function(){
+    console.log("drop block");
+    game.physics.enable(this.block, Phaser.Physics.ARCADE);
+    game.physics.arcade.gravity.y = 200;
+    console.log(this.block);
   },
   createBlock: function() {
     var me = this;
 
     // Define our block using bitmap data rather than an image sprite
-    var blockShape = me.game.add.bitmapData(me.game.world.width, 200);
+    var blockShape = me.game.add.bitmapData(me.game.world.width, 100);
 
     blockShape.ctx.rect(0, 0, me.game.world.width, 200);
     blockShape.ctx.fillStyle = '000';
@@ -69,7 +76,7 @@ Main.prototype = {
     var me = this;
 
     // Add the player to the game
-    me.player = me.game.add.sprite(200, 200, 'lego');
+    me.player = me.game.add.sprite(200, 100, 'lego');
 
     // Enable physics, use "true" to enable debug drawing
     me.game.physics.p2.enable([me.player], false);
