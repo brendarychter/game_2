@@ -37,22 +37,33 @@ Main.prototype = {
     // Create a random generator
     var seed = Date.now();
     me.random = new Phaser.RandomDataGenerator([seed]);
-
+    this.blocks = this.add.group();
     me.createBlock();
     me.createPlayer();
-    me.createRope();
-    var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    spaceKey.onDown.add(this.dropBlock, this);  
+    me.createRope();  
   },
   dropBlock: function(){
+    
+    this.blocks.enableBody = true;
+    this.blocks.createMultiple(1, "lego");
+    this.blocks.setAll('checkWorldBounds', true);
+    this.blocks.setAll('body.collideWorldBounds', true);
     console.log("drop block");
+
     game.physics.enable(this.block, Phaser.Physics.ARCADE);
     game.physics.arcade.gravity.y = 200;
+
+    if (!this.blocks.countDead()) return;
+        var block = this.blocks.getFirstExists(false);
+        block.reset(this.block.position.x, this.block.position.y);
+        block.body.velocity.y = 200;
+        this.createBlock();
+
     console.log(this.block);
   },
   createBlock: function() {
     var me = this;
-
+    console.log("hola")
     // Define our block using bitmap data rather than an image sprite
     var blockShape = me.game.add.bitmapData(me.game.world.width, 100);
 
@@ -69,8 +80,13 @@ Main.prototype = {
     me.block.anchor.setTo(0, 0);
 
     // Enable clicking on the block and trigger a function when it is clicked
-    me.block.inputEnabled = true;
-    me.block.events.onInputDown.add(me.changeRope, this);
+   // me.block.inputEnabled = true;
+   // me.block.events.onInputDown.add(me.changeRope, this);
+
+
+
+    var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    spaceKey.onDown.add(this.dropBlock, this);
   },
   createPlayer: function() {
     var me = this;
@@ -138,6 +154,8 @@ Main.prototype = {
 
     //Update the position of the rope
     me.drawRope();
+    this.physics.arcade.collide(this.blocks, this.blocks);
+    console.log(this.player.position)
   },
   changeRope: function(sprite, pointer) {
     var me = this;
@@ -154,3 +172,44 @@ Main.prototype = {
 
 game.state.add('Main', Main);
 game.state.start('Main');
+
+
+
+// var game = new Phaser.Game(325, 325, Phaser.AUTO, 'game');
+
+// BasicGame = {};
+
+// BasicGame.Game = function (game) {};
+
+// BasicGame.Game.prototype = {
+
+//     preload: function () {},
+
+//     create: function () {
+
+//         this.blocks = this.add.group();
+//         this.blocks.enableBody = true;
+//         this.blocks.physicsBodyType = Phaser.Physics.ARCADE;
+//         this.blocks.createMultiple(10, 'block');
+//         this.blocks.setAll('checkWorldBounds', true);
+//         //colision piso
+//         this.blocks.setAll('body.collideWorldBounds', true);
+
+//         this.time.events.loop(500, this.spawnBlocks, this);
+//     },
+
+//     update: function () {
+//         this.physics.arcade.collide(this.blocks, this.blocks);
+//     },
+
+//     spawnBlocks: function () {
+//         if (!this.blocks.countDead()) return;
+//         var block = this.blocks.getFirstExists(false);
+//         block.reset(this.rnd.integerInRange(0, 8) * 35, 0);
+//         block.body.velocity.y = 200;
+//     }
+
+// };
+
+// game.state.add('Game', BasicGame.Game);
+// game.state.start('Game');
