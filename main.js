@@ -43,7 +43,7 @@ Main.prototype = {
     me.createRope();  
   },
   dropBlock: function(){
-    
+    var blockP = this.player.position;
     this.blocks.enableBody = true;
     this.blocks.createMultiple(1, "lego");
     this.blocks.setAll('checkWorldBounds', true);
@@ -52,12 +52,10 @@ Main.prototype = {
 
     game.physics.enable(this.block, Phaser.Physics.ARCADE);
     game.physics.arcade.gravity.y = 200;
-
     if (!this.blocks.countDead()) return;
         var block = this.blocks.getFirstExists(false);
-        block.reset(this.block.position.x, this.block.position.y);
+        block.reset(blockP.x, blockP.y);
         block.body.velocity.y = 200;
-        this.createBlock();
 
     console.log(this.block);
   },
@@ -85,8 +83,7 @@ Main.prototype = {
 
 
 
-    var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    spaceKey.onDown.add(this.dropBlock, this);
+    
   },
   createPlayer: function() {
     var me = this;
@@ -102,6 +99,11 @@ Main.prototype = {
 
     // Add our PhysicsEditor bounding shape
     me.player.body.loadPolygon("sprite_physics", "lego");
+    
+    var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    spaceKey.onDown.add(this.dropBlock, this);
+    console.log(this.player.position);
+
   },
   createRope: function() {
     var me = this;
@@ -155,7 +157,6 @@ Main.prototype = {
     //Update the position of the rope
     me.drawRope();
     this.physics.arcade.collide(this.blocks, this.blocks);
-    console.log(this.player.position)
   },
   changeRope: function(sprite, pointer) {
     var me = this;
