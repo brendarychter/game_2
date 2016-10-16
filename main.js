@@ -8,7 +8,7 @@ var
   },
   musicPlayer*/;
 
-
+  var count = 0;
 Main.prototype = {
 
   preload: function () {
@@ -50,14 +50,19 @@ Main.prototype = {
     this.blocks.setAll('body.collideWorldBounds', true);
     console.log("drop block");
 
+
+
     game.physics.enable(this.block, Phaser.Physics.ARCADE);
     game.physics.arcade.gravity.y = 200;
+    console.log(this.blocks.countDead())
     if (!this.blocks.countDead()) return;
         var block = this.blocks.getFirstExists(false);
         block.reset(blockP.x, blockP.y);
         block.body.velocity.y = 200;
-
-    console.log(this.block);
+        count++;
+        if(count>1)
+          console.log("que solo exista la colision del primero con el suelo y del resto con los bloques");
+    console.log(this.blocks);
   },
   createBlock: function() {
     var me = this;
@@ -82,8 +87,6 @@ Main.prototype = {
    // me.block.events.onInputDown.add(me.changeRope, this);
 
 
-
-    
   },
   createPlayer: function() {
     var me = this;
@@ -127,9 +130,9 @@ Main.prototype = {
     me.rope = me.game.physics.p2.createSpring(
         me.block,  // sprite 1
         me.player, // sprite 2
-        300,       // length of the rope
+        150,       // length of the rope
         10,        // stiffness
-        3,         // damping
+        100,         // damping
         [-(me.block.world.x + 500), -(me.block.world.y + me.block.height)]
     );
 
