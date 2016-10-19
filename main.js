@@ -8,6 +8,8 @@ var
   },
   musicPlayer*/;
 
+    var arr = [];
+    var n;
   var count = 0;
 Main.prototype = {
 
@@ -44,13 +46,14 @@ Main.prototype = {
   },
   dropBlock: function(){
     var blockP = this.player.position;
+    if (count == 0){
+      n = this.player;
+    }
     this.blocks.enableBody = true;
+
     this.blocks.createMultiple(1, "lego");
     this.blocks.setAll('checkWorldBounds', true);
     this.blocks.setAll('body.collideWorldBounds', true);
-    console.log("drop block");
-
-
 
     game.physics.enable(this.block, Phaser.Physics.ARCADE);
     game.physics.arcade.gravity.y = 200;
@@ -60,13 +63,15 @@ Main.prototype = {
         block.reset(blockP.x, blockP.y);
         block.body.velocity.y = 200;
         count++;
-        if(count>1)
-          console.log("que solo exista la colision del primero con el suelo y del resto con los bloques");
-    console.log(this.blocks);
+        if(count>3)
+          this.blocks.setAll('body.collideWorldBounds', true);
+          blockP.y = blockP.y - 50;
+          // setTimeOut(function(){
+          //   console.log("hola")
+          // }, 2000)
   },
   createBlock: function() {
     var me = this;
-    console.log("hola")
     // Define our block using bitmap data rather than an image sprite
     var blockShape = me.game.add.bitmapData(me.game.world.width, 100);
 
@@ -81,11 +86,6 @@ Main.prototype = {
     me.game.physics.p2.enable(me.block);
     me.block.body.static = true;
     me.block.anchor.setTo(0, 0);
-
-    // Enable clicking on the block and trigger a function when it is clicked
-   // me.block.inputEnabled = true;
-   // me.block.events.onInputDown.add(me.changeRope, this);
-
 
   },
   createPlayer: function() {
@@ -160,18 +160,7 @@ Main.prototype = {
     //Update the position of the rope
     me.drawRope();
     this.physics.arcade.collide(this.blocks, this.blocks);
-  },
-  changeRope: function(sprite, pointer) {
-    var me = this;
-
-    //Remove last spring
-    me.game.physics.p2.removeSpring(me.rope);
-
-    //Create new spring at pointer x and y
-    me.rope = me.game.physics.p2.createSpring(me.block, me.player, 200, 10, 3, [-pointer.x, -pointer.y]);
-    me.ropeAnchorX = pointer.x;
-    me.ropeAnchorY = pointer.y
-  },
+  }
 };
 
 game.state.add('Main', Main);
