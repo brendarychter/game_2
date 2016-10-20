@@ -20,11 +20,18 @@ GameMenu.prototype = {
 
   create: function () {
 
+    if (music.name !== "adventure" && playMusic) {
+      music.stop();
+      music = game.add.audio('adventure');
+      music.loop = true;
+      music.play();
+    }
     game.stage.disableVisibilityChange = true;
     game.add.sprite(0, 0, 'menu-bg');
     game.add.existing(this.titleText);
 
     this.addMenuOption('Comenzar', function () {
+      music.stop();
       game.state.start("Game");
     });
   }

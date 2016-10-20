@@ -19,6 +19,9 @@ Options.prototype = {
     this.optionCount = 1;
   },
   create: function () {
+    var playSound = gameOptions.playSound,
+        playMusic = gameOptions.playMusic;
+
     game.add.sprite(0, 0, 'options-bg');
     game.add.existing(this.titleText);
   }

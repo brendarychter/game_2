@@ -38,9 +38,13 @@ GameOver.prototype = {
     text.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
     text.anchor.set(0.5);
     this.addMenuOption('Jugar otra vez', function (e) {
+      music.stop();
       this.game.state.start("Game");
     });
     this.addMenuOption('Volver al menú', function (e) {
+      music.stop();
+      music = game.add.audio('adventure');
+      music.play();
       this.game.state.start("GameMenu");
     })
   }

@@ -1,12 +1,19 @@
 var Game = function(game) {};
 
 Game.prototype = {
+  
 
   preload: function () {
+/*    game.load.script('polyfill', 'lib/polyfill.js');
+    game.load.script('utils', 'lib/utils.js');*/
+/*    game.load.script('splash', 'states/Splash.js');*/
     game.load.image('lego', 'assets/img/pipe.png');
+    game.load.physics("sprite_physics", "assets/sprite_physics.json");
   },
 
   create: function () {
+/*    game.state.add('Splash', Splash);
+    game.state.start('Splash');*/
 
     var me = this;
 
@@ -29,9 +36,7 @@ Game.prototype = {
   },
   dropBlock: function(){
     var blockP = this.player.position;
-    if (count == 0){
-      n = this.player;
-    }
+    
     this.blocks.enableBody = true;
 
     this.blocks.createMultiple(1, "lego");
@@ -45,10 +50,9 @@ Game.prototype = {
         var block = this.blocks.getFirstExists(false);
         block.reset(blockP.x, blockP.y);
         block.body.velocity.y = 200;
-        count++;
-        if(count>3)
-          this.blocks.setAll('body.collideWorldBounds', true);
-          blockP.y = blockP.y - 50;
+        //if(count>3)
+          //this.blocks.setAll('body.collideWorldBounds', true);
+          //blockP.y = blockP.y - 50;
           // setTimeOut(function(){
           //   console.log("hola")
           // }, 2000)

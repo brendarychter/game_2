@@ -12,8 +12,8 @@ Splash.prototype = {
   },
   // varios freebies found from google image search
   loadImages: function () {
-    game.load.image('menu-bg', 'assets/img/splash.png');
-    //game.load.image('gameover-bg', 'assets/images/gameover.png');
+    game.load.image('menu-bg', 'assets/images/splash.png');
+    game.load.image('gameover-bg', 'assets/images/gameover-bg.png');
   },
 
   loadFonts: function () {
@@ -36,8 +36,15 @@ Splash.prototype = {
     game.state.add("GameOver",GameOver);
   },
 
+  addGameMusic: function () {
+    music = game.add.audio('adventure');
+    music.loop = true;
+    music.play();
+  },
+
   create: function() {
     this.addGameStates();
+    this.addGameMusic();
 
     game.state.start("GameMenu");
   }
