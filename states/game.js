@@ -1,58 +1,147 @@
-var Splash = function () {};
+var Game = function(game) {};
 
-Splash.prototype = {
+Game.prototype = {
 
-  loadScripts: function () {
-    game.load.script('style', 'lib/style.js');
-    game.load.script('mixins', 'lib/mixins.js');
-    game.load.script('WebFont', 'vendor/webfontloader.js');
-    game.load.script('GameMenu','states/gamemenu.js');
-    game.load.script('game', 'states/Game.js');
-    game.load.script('GameOver','states/gameover.js');
-  },
-
-  loadBgm: function () {
-    // thanks Kevin Macleod at http://incompetech.com/
-    game.load.audio('adventure', 'assets/bgm/adventure.mp3');
-    game.load.audio('final', 'assets/bgm/finalsong.wav');
-  },
-  // varios freebies found from google image search
-  loadImages: function () {
-    game.load.image('menu-bg', 'assets/images/background-start.png');
-    game.load.image('gameover-bg', 'assets/images/gameover-bg.png');
-  },
-
-  loadFonts: function () {
-    WebFontConfig = {
-      custom: {
-        families: ['Nexa'],
-        urls: ['assets/style/nexa.css']
-      }
-    }
-  },
   preload: function () {
-    this.loadScripts();
-    this.loadImages();
-    this.loadFonts();
-    this.loadBgm();
+    game.load.image('lego', 'assets/img/pipe.png');
   },
 
-  addGameStates: function () {
-    game.state.add("GameMenu",GameMenu);
-    game.state.add("Game",Game);
-    game.state.add("GameOver",GameOver);
+  create: function () {
+
+    var me = this;
+
+    // Set the background colour to blue
+    me.game.stage.backgroundColor = '#ccddff';
+
+    // Start the P2 Physics Engine
+    me.game.physics.startSystem(Phaser.Physics.P2JS);
+
+    // Set the gravity
+    me.game.physics.p2.gravity.y = 1000;
+
+    // Create a random generator
+    var seed = Date.now();
+    me.random = new Phaser.RandomDataGenerator([seed]);
+    this.blocks = this.add.group();
+    me.createBlock();
+    me.createPlayer();
+    me.createRope();  
   },
+  dropBlock: function(){
+    var blockP = this.player.position;
+    if (count == 0){
+      n = this.player;
+    }
+    this.blocks.enableBody = true;
 
-  addGameMusic: function () {
-    music = game.add.audio('adventure');
-    music.loop = true;
-    music.play();
+    this.blocks.createMultiple(1, "lego");
+    this.blocks.setAll('checkWorldBounds', true);
+    this.blocks.setAll('body.collideWorldBounds', true);
+
+    game.physics.enable(this.block, Phaser.Physics.ARCADE);
+    game.physics.arcade.gravity.y = 200;
+    console.log(this.blocks.countDead())
+    if (!this.blocks.countDead()) return;
+        var block = this.blocks.getFirstExists(false);
+        block.reset(blockP.x, blockP.y);
+        block.body.velocity.y = 200;
+        count++;
+        if(count>3)
+          this.blocks.setAll('body.collideWorldBounds', true);
+          blockP.y = blockP.y - 50;
+          // setTimeOut(function(){
+          //   console.log("hola")
+          // }, 2000)
   },
+  createBlock: function() {
+    var me = this;
+    // Define our block using bitmap data rather than an image sprite
+    var blockShape = me.game.add.bitmapData(me.game.world.width, 100);
 
-  create: function() {
-    this.addGameStates();
-    this.addGameMusic();
+    blockShape.ctx.rect(0, 0, me.game.world.width, 200);
+    blockShape.ctx.fillStyle = '000';
+    blockShape.ctx.fill();
 
-    game.state.start("GameMenu");
+    // Create a new sprite using the bitmap data
+    me.block = me.game.add.sprite(0, 0, blockShape);
+
+    // Enable P2 Physics and set the block not to move
+    me.game.physics.p2.enable(me.block);
+    me.block.body.static = true;
+    me.block.anchor.setTo(0, 0);
+
+  },
+  createPlayer: function() {
+    var me = this;
+
+    // Add the player to the game
+    me.player = me.game.add.sprite(200, 100, 'lego');
+
+    // Enable physics, use "true" to enable debug drawing
+    me.game.physics.p2.enable([me.player], false);
+
+    // Get rid of current bounding box
+    me.player.body.clearShapes();
+
+    // Add our PhysicsEditor bounding shape
+    me.player.body.loadPolygon("sprite_physics", "lego");
+    
+    var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    spaceKey.onDown.add(this.dropBlock, this);
+    console.log(this.player.position);
+
+  },
+  createRope: function() {
+    var me = this;
+
+    // Add bitmap data to draw the rope
+    me.ropeBitmapData = game.add.bitmapData(me.game.world.width, me.game.world.height);
+
+    me.ropeBitmapData.ctx.beginPath();
+    me.ropeBitmapData.ctx.lineWidth = "4";
+    me.ropeBitmapData.ctx.strokeStyle = "#ffffff";
+    me.ropeBitmapData.ctx.stroke();
+
+    // Create a new sprite using the bitmap data
+    me.line = game.add.sprite(0, 0, me.ropeBitmapData);
+
+    // Keep track of where the rope is anchored
+    me.ropeAnchorX = (me.block.world.x + 500);
+    me.ropeAnchorY = (me.block.world.y + me.block.height);
+
+    // Create a spring between the player and block to act as the rope
+    me.rope = me.game.physics.p2.createSpring(
+        me.block,  // sprite 1
+        me.player, // sprite 2
+        150,       // length of the rope
+        10,        // stiffness
+        100,         // damping
+        [-(me.block.world.x + 500), -(me.block.world.y + me.block.height)]
+    );
+
+    // Draw a line from the player to the block to visually represent the spring
+    me.line = new Phaser.Line(me.player.x, me.player.y,
+        (me.block.world.x + 500), (me.block.world.y + me.block.height));
+  },
+  drawRope: function() {
+      var me = this;
+
+      // Change the bitmap data to reflect the new rope position
+      me.ropeBitmapData.clear();
+      me.ropeBitmapData.ctx.beginPath();
+      me.ropeBitmapData.ctx.beginPath();
+      me.ropeBitmapData.ctx.moveTo(me.player.x, me.player.y);
+      me.ropeBitmapData.ctx.lineTo(me.ropeAnchorX, me.ropeAnchorY);
+      me.ropeBitmapData.ctx.lineWidth = 4;
+      me.ropeBitmapData.ctx.stroke();
+      me.ropeBitmapData.ctx.closePath();
+      me.ropeBitmapData.render();
+  },
+  update: function() {
+    var me = this;
+
+    //Update the position of the rope
+    me.drawRope();
+    this.physics.arcade.collide(this.blocks, this.blocks);
   }
 };
