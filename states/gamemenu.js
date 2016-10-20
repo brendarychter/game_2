@@ -4,10 +4,10 @@ GameMenu.prototype = {
 
   menuConfig: {
     startY: 320,
-    startX: 30
+    startX: 70
   },
   init: function () {
-    this.titleText = game.make.text(game.world.centerX, 100, "FLAPPY TIME", {
+    this.titleText = game.make.text(game.world.centerX, 100, "Iceblocks", {
       font: 'bold 40pt Nexa',
       fill: '#ffd73a',
       align: 'center',
@@ -20,18 +20,10 @@ GameMenu.prototype = {
 
   create: function () {
 
-    if (music.name !== "adventure" && playMusic) {
-      music.stop();
-      music = game.add.audio('adventure');
-      music.loop = true;
-      music.play();
-    }
     game.stage.disableVisibilityChange = true;
     game.add.sprite(0, 0, 'menu-bg');
-    game.add.existing(this.titleText);
 
-    this.addMenuOption('Comenzar', function () {
-      music.stop();
+    this.addMenuOption('COMENZAR', function () {
       game.state.start("Game");
     });
   }

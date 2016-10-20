@@ -9,7 +9,7 @@ Options.prototype = {
   },
 
   init: function () {
-    this.titleText = game.make.text(game.world.centerX, 100, "FLAPPY TIME", {
+    this.titleText = game.make.text(game.world.centerX, 100, "Iceblocks", {
       font: 'bold 60pt Nexa',
       fill: '#FDFFB5',
       align: 'center'
@@ -19,9 +19,6 @@ Options.prototype = {
     this.optionCount = 1;
   },
   create: function () {
-    var playSound = gameOptions.playSound,
-        playMusic = gameOptions.playMusic;
-
     game.add.sprite(0, 0, 'options-bg');
     game.add.existing(this.titleText);
   }

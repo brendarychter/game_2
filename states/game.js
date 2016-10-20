@@ -7,14 +7,15 @@ Game.prototype = {
 /*    game.load.script('polyfill', 'lib/polyfill.js');
     game.load.script('utils', 'lib/utils.js');*/
 /*    game.load.script('splash', 'states/Splash.js');*/
-    game.load.image('lego', 'assets/img/pipe.png');
+    game.load.image('lego', 'assets/images/ice.png');
+    game.load.image('background', 'assets/images/game_background.png');
     game.load.physics("sprite_physics", "assets/sprite_physics.json");
   },
 
   create: function () {
 /*    game.state.add('Splash', Splash);
     game.state.start('Splash');*/
-
+    game.add.sprite(0, 0, 'background');
     var me = this;
 
     // Set the background colour to blue
@@ -32,7 +33,9 @@ Game.prototype = {
     this.blocks = this.add.group();
     me.createBlock();
     me.createPlayer();
-    me.createRope();  
+    me.createRope();
+    this.score = 0;
+    this.labelScore = game.add.text(20, 20, "0", { font: "30px Nexa", fill: "#ffffff" });
   },
   dropBlock: function(){
     var blockP = this.player.position;
@@ -50,6 +53,8 @@ Game.prototype = {
         var block = this.blocks.getFirstExists(false);
         block.reset(blockP.x, blockP.y);
         block.body.velocity.y = 200;
+        this.score += 10;
+        this.labelScore.text = this.score; 
         //if(count>3)
           //this.blocks.setAll('body.collideWorldBounds', true);
           //blockP.y = blockP.y - 50;
